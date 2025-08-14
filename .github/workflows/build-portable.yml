@@ -1,0 +1,81 @@
+name: Build n8n Portable (Win + Mac Universal)
+
+on:
+  workflow_dispatch: # Run manually
+
+jobs:
+  build-win:
+    runs-on: windows-latest
+    env:
+      ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES: true
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Extract source
+        run: Expand-Archive -Path "${{ github.workspace }}\\n8n-desktop.zip" -DestinationPath ./src
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: |
+          cd src/n8n-desktop
+          npm install
+
+      - name: Rebuild native modules
+        run: |
+          cd src/n8n-desktop
+          npm run rebuild-native-module
+
+      - name: Build Windows portable executable
+        run: |
+          cd src/n8n-desktop
+          npm run build-win
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: n8n-windows-portable
+          path: src/n8n-desktop/dist/*.exe
+
+  build-mac:
+    runs-on: macos-latest
+    env:
+      ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES: true
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Extract source
+        run: unzip n8n-desktop.zip -d ./src
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: |
+          cd src/n8n-desktop
+          npm install
+
+      - name: Rebuild native modules
+        run: |
+          cd src/n8n-desktop
+          npm run rebuild-native-module
+
+      - name: Build Mac universal app
+        run: |
+          cd src/n8n-desktop
+          npm run build-mac
+          cd dist
+          zip -r n8n-mac-universal.zip *.app
+
+      - name: Upload Mac artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: n8n-mac-universal
+          path: src/n8n-desktop/dist/n8n-mac-universal.zip
