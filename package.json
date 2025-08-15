@@ -1,0 +1,98 @@
+{
+    "name": "n8n",
+    "version": "1.105.3",
+    "description": "n8n desktop version",
+    "main": "index.js",
+    "scripts": {
+        "rebuild-native-module": "cd node_modules/sqlite3 && npx node-gyp rebuild && cd ../msgpackr-extract && npx node-gyp rebuild && cd ../..",
+        "clean": "rm -rf dist node_modules package-lock.json build",
+        "dev": "cross-env ELECTRON_DEV_MODE=true electron .",
+        "build-mac": "npm run rebuild-native-module && electron-builder build --mac",
+        "build-mac-no-sign": "npm run rebuild-native-module && electron-builder build --mac -c.mac.identity=null",
+        "build-win": "npm run rebuild-native-module && electron-builder build --win --x64"
+    },
+    "build": {
+        "appId": "io.n8n.desktop",
+        "productName": "n8n",
+        "asar": true,
+        "compression": "maximum",
+        "files": [
+            "**/*",
+            "!**/*.ts",
+            "!**/*.map",
+            "!**/__tests__/**",
+            "!*.code-workspace",
+            "!LICENSE.md",
+            "!package-lock.json",
+            "!src/",
+            "!hooks/",
+            "!angular.json",
+            "!_config.yml",
+            "!karma.conf.js",
+            "!tsconfig.json",
+            "!tslint.json",
+            "!README.md",
+            "!*.md",
+            "!**/binding.gyp",
+            "!**/*.c",
+            "!**/*.h",
+            "!**/*.cc",
+            "!**/*.cpp",
+            "!**/*.o",
+            "!**/*.obj",
+            "!**/*.gyp",
+            "!**/*.gypi",
+            "!test/",
+            "!docs/",
+            "!examples/"
+        ],
+        "extraResources": [
+            {
+                "from": "node_modules/sqlite3/build/Release",
+                "to": "node_modules/sqlite3/build/Release",
+                "filter": ["sqlite3.node"]
+            }
+        ],
+        "directories": {
+            "buildResources": "assets"
+        },
+        "mac": {
+            "hardenedRuntime": false,
+            "gatekeeperAssess": false,
+            "target": [
+                {
+                    "target": "dir",
+                    "arch": ["x64", "arm64"]
+                }
+            ]
+        },
+        "win": {
+            "target": [
+                {
+                    "target": "dir",
+                    "arch": ["x64"]
+                }
+            ]
+        }
+    },
+    "dependencies": {
+        "cli-progress": "^3.12.0",
+        "cross-env": "^7.0.3",
+        "dotenv": "^10.0.0",
+        "find-process": "^1.4.7",
+        "msgpackr-extract": "^3.0.2",
+        "n8n": "^1.105.3",
+        "node-fetch": "^2.6.7",
+        "p-cancelable": "^2.0.0",
+        "respawn": "^2.6.0",
+        "sqlite3": "^5.1.7",
+        "tcp-port-used": "^1.0.2",
+        "wait-on": "^6.0.0"
+    },
+    "devDependencies": {
+        "electron": "35.0.3",
+        "electron-builder": "^24.6.0",
+        "electron-notarize": "^1.2.2",
+        "electron-rebuild": "^3.2.9"
+    }
+}
