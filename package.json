@@ -9,7 +9,7 @@
         "dev": "cross-env ELECTRON_DEV_MODE=true electron .",
         "build-mac": "npm run rebuild-native-module && electron-builder build --mac",
         "build-mac-no-sign": "npm run rebuild-native-module && electron-builder build --mac -c.mac.identity=null",
-        "build-win": "npm run rebuild-native-module && electron-builder build --win --x64"
+        "build-win": "npm run rebuild-native-module && electron-builder build --win portable --x64"
     },
     "build": {
         "appId": "io.n8n.desktop",
@@ -69,10 +69,11 @@
         "win": {
             "target": [
                 {
-                    "target": "dir",
+                    "target": "portable",
                     "arch": ["x64"]
                 }
-            ]
+            ],
+            "requestedExecutionLevel": "asInvoker"
         }
     },
     "dependencies": {
