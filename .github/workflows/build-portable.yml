@@ -1,4 +1,4 @@
-name: Build n8n Portable (Win + Mac Universal)
+name: Build n8n Portable (Win)
 
 on:
   workflow_dispatch: # Run manually
@@ -18,22 +18,16 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: |
-          cd n8n-desktop
-          npm install
+        run: npm install
 
       - name: Rebuild native modules
-        run: |
-          cd n8n-desktop
-          npm run rebuild-native-module
+        run: npm run rebuild-native-module
 
       - name: Build Windows portable executable
-        run: |
-          cd n8n-desktop
-          npm run build-win
+        run: npm run build-win
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
         with:
           name: n8n-windows-portable
-          path: n8n-desktop/dist/*.exe
+          path: dist/*.exe
