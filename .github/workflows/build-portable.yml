@@ -37,39 +37,3 @@ jobs:
         with:
           name: n8n-windows-portable
           path: n8n-desktop/dist/*.exe
-
-  build-mac:
-    runs-on: macos-latest
-    env:
-      ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES: true
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install dependencies
-        run: |
-          cd n8n-desktop
-          npm install
-
-      - name: Rebuild native modules
-        run: |
-          cd n8n-desktop
-          npm run rebuild-native-module
-
-      - name: Build Mac universal app
-        run: |
-          cd n8n-desktop
-          npm run build-mac
-          cd dist
-          zip -r n8n-mac-universal.zip *.app
-
-      - name: Upload Mac artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: n8n-mac-universal
-          path: n8n-desktop/dist/n8n-mac-universal.zip
